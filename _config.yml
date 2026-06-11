@@ -1,0 +1,11 @@
+title: Adrian Rossouw
+description: VP Information Systems & Product at Renalytix. AI engineering, regulated software, LLM orchestration. Dublin, Ireland.
+url: https://adrian.rossouw.ie
+baseurl: ""
+exclude:
+  - openspec/
+  - docs/
+  - README.md
+  - AGENTS.md
+  - CLAUDE.md
+  - dist/

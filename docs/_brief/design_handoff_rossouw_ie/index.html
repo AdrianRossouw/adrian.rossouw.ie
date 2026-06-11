@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Adrian Rossouw — AI engineering &amp; regulated-industry delivery</title>
+<meta name="description" content="VP Information Systems &amp; Product at Renalytix. AI engineering, regulated software, LLM orchestration. Dublin, Ireland." />
+<!-- Google Fonts: add for production
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=IBM+Plex+Sans:wght@0,400;0,450;0,500;0,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" />
+-->
+<style>
+/* =========================================================================
+   Design tokens — Pine direction (formicary.ai shared system)
+   ========================================================================= */
+
+:root {
+  --font-serif: "Newsreader", Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --font-mono:  "IBM Plex Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
+  --font-sans:  "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+
+  --fs-micro:   0.6875rem;
+  --fs-mono:    0.75rem;
+  --fs-meta:    0.8125rem;
+  --fs-sm:      0.9375rem;
+  --fs-base:    1.1875rem;
+  --fs-lead:    1.375rem;
+  --fs-h3:      1.5rem;
+  --fs-h2:      1.9375rem;
+  --fs-h1:      2.75rem;
+  --fs-display: 3.5rem;
+
+  --lh-tight: 1.18;
+  --lh-snug:  1.35;
+  --lh-body:  1.72;
+  --lh-meta:  1.5;
+
+  color-scheme: light;
+  --paper:       oklch(0.988 0.004 40);
+  --paper-sunk:  oklch(0.968 0.006 40);
+  --paper-raise: oklch(0.998 0.002 40);
+  --ink:         oklch(0.248 0.014 35);
+  --ink-soft:    oklch(0.398 0.012 35);
+  --ink-mute:    oklch(0.540 0.010 30);
+  --ink-faint:   oklch(0.660 0.008 30);
+  --rule:        oklch(0.888 0.008 40);
+  --rule-soft:   oklch(0.928 0.005 40);
+  --accent:      oklch(0.405 0.135 22);
+  --accent-deep: oklch(0.335 0.130 22);
+  --accent-tint: oklch(0.958 0.024 22);
+  --accent-rule: oklch(0.698 0.090 22);
+
+  --space-1: 0.25rem; --space-2: 0.5rem;  --space-3: 0.75rem;
+  --space-4: 1rem;    --space-5: 1.5rem;  --space-6: 2rem;
+  --space-7: 3rem;    --space-8: 4.5rem;  --space-9: 7rem;
+
+  --measure: 62ch;
+  --measure-wide: 74ch;
+  --page-pad: clamp(1.25rem, 5vw, 3rem);
+  --radius: 3px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur: 180ms;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper:       oklch(0.188 0.013 30);
+  --paper-sunk:  oklch(0.228 0.015 30);
+  --paper-raise: oklch(0.218 0.014 30);
+  --ink:         oklch(0.930 0.009 40);
+  --ink-soft:    oklch(0.778 0.011 40);
+  --ink-mute:    oklch(0.622 0.012 30);
+  --ink-faint:   oklch(0.502 0.012 30);
+  --rule:        oklch(0.322 0.018 30);
+  --rule-soft:   oklch(0.272 0.015 30);
+  --accent:      oklch(0.740 0.150 20);
+  --accent-deep: oklch(0.810 0.130 20);
+  --accent-tint: oklch(0.295 0.048 22);
+  --accent-rule: oklch(0.520 0.100 22);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-serif);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  color: var(--ink);
+  background: var(--paper);
+  transition: background-color 240ms var(--ease), color 240ms var(--ease);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
+}
+
+::selection { background: var(--accent-tint); color: var(--ink); }
+a { color: var(--accent); text-decoration: none; }
+p { text-wrap: pretty; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+.shell {
+  width: 100%;
+  max-width: calc(var(--measure) + var(--page-pad) * 2);
+  margin-inline: auto;
+  padding-inline: var(--page-pad);
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-weight: 500;
+}
+
+/* Header */
+.site-head {
+  border-bottom: 1px solid var(--rule);
+  background: color-mix(in oklch, var(--paper) 88%, transparent);
+  backdrop-filter: saturate(1.1) blur(6px);
+  position: sticky; top: 0; z-index: 20;
+}
+.site-head__row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-5); padding-block: var(--space-4);
+}
+.wordmark {
+  display: inline-flex; align-items: baseline; gap: 0.45ch;
+  color: var(--ink); font-weight: 500;
+  font-size: 1.35rem; letter-spacing: -0.01em; text-decoration: none;
+}
+.site-head__right { display: flex; align-items: center; gap: var(--space-5); }
+.theme-toggle {
+  flex: none; width: 30px; height: 30px; padding: 0; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--rule); border-radius: 50%;
+  transition: border-color var(--dur) var(--ease);
+}
+.theme-toggle:hover { border-color: var(--ink-mute); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-toggle__disc {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1.5px solid var(--ink-mute);
+  background: linear-gradient(90deg, var(--ink-soft) 0 50%, transparent 50% 100%);
+}
+.nav {
+  display: flex; align-items: center; gap: var(--space-5);
+  font-family: var(--font-mono); font-size: var(--fs-micro);
+  letter-spacing: 0.16em; text-transform: uppercase;
+}
+.nav a {
+  color: var(--ink-faint); text-decoration: none;
+  padding-bottom: 2px; border-bottom: 1px solid transparent;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.nav a:hover { color: var(--ink); border-bottom-color: var(--rule); }
+.nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* Masthead */
+.masthead { padding-top: var(--space-8); }
+.masthead__eyebrow { margin-bottom: var(--space-5); }
+.masthead__title {
+  font-size: clamp(2.65rem, 6.4vw, 3.7rem);
+  line-height: 1.02; font-weight: 560; letter-spacing: -0.022em;
+  color: var(--ink); max-width: 16ch; text-wrap: balance;
+}
+.masthead__deck {
+  margin-top: var(--space-4); position: relative; padding-top: var(--space-4);
+  font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+  line-height: 1.36; font-weight: 400; letter-spacing: -0.006em;
+  color: var(--ink-soft); max-width: 40ch; text-wrap: balance;
+}
+.masthead__deck::before {
+  content: ""; position: absolute; top: 0; left: 0;
+  width: 3.5ch; height: 2px; background: var(--accent); border-radius: 2px;
+}
+.masthead__byline {
+  margin-top: var(--space-6);
+  font-family: var(--font-mono); font-size: var(--fs-meta);
+  color: var(--ink-mute); letter-spacing: 0.02em;
+}
+.title-seam { color: var(--accent); }
+
+/* Prose */
+.prose > * + * { margin-top: var(--space-5); }
+.prose p { font-size: var(--fs-base); line-height: var(--lh-body); }
+.prose em { font-style: italic; }
+.prose strong { font-weight: 600; }
+.prose a {
+  text-decoration: underline; text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em; text-decoration-color: var(--accent-rule);
+  transition: text-decoration-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.prose a:hover { color: var(--accent-deep); text-decoration-color: var(--accent); }
+
+.rule-mark {
+  border: 0; height: 0; border-top: 1px solid var(--rule);
+  width: 4ch; margin-block: var(--space-7); margin-inline: 0;
+}
+
+/* Epistemic callout */
+.epistemic {
+  --es-pad: clamp(1.1rem, 3vw, 1.75rem);
+  border-top: 1px solid var(--rule);
+  padding-block: var(--es-pad);
+}
+.epistemic__label {
+  display: flex; align-items: center; gap: 0.7ch;
+  font-family: var(--font-mono); font-size: var(--fs-mono);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent-deep); font-weight: 600; margin-bottom: var(--space-4);
+}
+.epistemic__label::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); flex: none;
+}
+.epistemic__fields {
+  display: grid; grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-4);
+  font-family: var(--font-mono); font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+  padding-bottom: var(--space-4); margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--rule);
+}
+.epistemic__fields dt {
+  color: var(--ink-faint); text-transform: uppercase;
+  letter-spacing: 0.08em; font-size: var(--fs-micro); font-weight: 500; padding-top: 0.25em;
+}
+.epistemic__fields dd { color: var(--ink); }
+.epistemic__note { font-size: var(--fs-sm); line-height: 1.6; color: var(--ink-soft); }
+.epistemic__note em { font-style: italic; color: var(--ink-mute); }
+
+/* Tags */
+.tag {
+  font-family: var(--font-mono); font-size: var(--fs-micro);
+  letter-spacing: 0.03em; color: var(--ink-mute);
+  border: 1px solid var(--rule-soft); border-radius: 3px;
+  padding: 0.1rem 0.45rem; background: transparent;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.tag::before { content: "#"; color: var(--ink-faint); }
+.tag:hover { color: var(--ink); border-color: var(--ink-faint); }
+
+/* Footer */
+.site-foot {
+  margin-top: var(--space-9);
+  border-top: 1px solid var(--rule);
+  padding-block: var(--space-6) var(--space-8);
+}
+.site-foot__row {
+  display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5);
+  align-items: baseline; justify-content: space-between;
+  font-family: var(--font-mono); font-size: var(--fs-mono);
+  color: var(--ink-mute); letter-spacing: 0.03em;
+}
+.site-foot__row a {
+  color: var(--ink-mute); text-decoration: none; border-bottom: 1px solid var(--rule);
+}
+.site-foot__row a:hover { color: var(--ink); border-bottom-color: var(--accent); }
+
+@media (max-width: 640px) {
+  .masthead { padding-top: var(--space-5); }
+  .masthead__eyebrow { margin-bottom: var(--space-3); }
+  .site-head__right { gap: var(--space-3); }
+  .nav { display: none; }
+  .masthead__title { font-size: clamp(1.85rem, 8vw, 2.6rem); overflow-wrap: break-word; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+</style>
+<script>
+/* Theme: light default, opt-in dark, persisted */
+(function () {
+  var KEY = "rossouw-theme";
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem(KEY);
+    if (saved === "dark") root.setAttribute("data-theme", "dark");
+    else if (saved === "light") root.removeAttribute("data-theme");
+  } catch (e) {}
+  function current() { return root.getAttribute("data-theme") === "dark" ? "dark" : "light"; }
+  function apply(theme) {
+    if (theme === "dark") root.setAttribute("data-theme", "dark");
+    else root.removeAttribute("data-theme");
+    try { localStorage.setItem(KEY, theme); } catch (e) {}
+    sync();
+  }
+  function sync() {
+    var t = current();
+    var btns = document.querySelectorAll("[data-theme-toggle]");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].setAttribute("aria-pressed", t === "light" ? "true" : "false");
+      btns[i].setAttribute("aria-label", t === "light" ? "Switch to dark theme" : "Switch to light theme");
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    var btns = document.querySelectorAll("[data-theme-toggle]");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", function () { apply(current() === "light" ? "dark" : "light"); });
+    }
+    sync();
+  });
+})();
+</script>
+<style>
+  /* =====================================================================
+     adrian.rossouw.ie — page-specific styles
+     Extends tokens.css. Same visual vocabulary as formicary.ai.
+     ===================================================================== */
+
+  /* ── Section anatomy ─────────────────────────────────────────────────
+     Each section (after the intro) gets a top rule, generous block
+     padding, and a section-head pattern: kicker → h2 → optional lede. */
+
+  .page-section {
+    padding-top: var(--space-9);
+    padding-bottom: var(--space-8);
+  }
+
+  .section-head {
+    margin-bottom: var(--space-7);
+  }
+  .section-head h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.85rem, 4vw, var(--fs-h2));
+    font-weight: 560;
+    line-height: var(--lh-tight);
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    max-width: 26ch;
+    text-wrap: balance;
+    margin-top: var(--space-3);
+  }
+  .section-lede {
+    margin-top: var(--space-3);
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: var(--fs-lead);
+    line-height: 1.45;
+    max-width: 44ch;
+    text-wrap: pretty;
+  }
+
+  /* ── Practice list ───────────────────────────────────────────────────
+     Numbered, rule-separated. Numbers in accent mono; text in serif.  */
+
+  .practice-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .practice-item {
+    display: flex;
+    gap: var(--space-5);
+    padding-block: var(--space-4);
+    border-top: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .practice-item:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+  .practice-num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 1.6rem;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+  .practice-text {
+    font-family: var(--font-serif);
+    font-size: var(--fs-base);
+    color: var(--ink);
+    line-height: var(--lh-snug);
+    text-wrap: pretty;
+  }
+
+  /* ── Project entries ─────────────────────────────────────────────────
+     Two-column grid: accent number gutter + content. Rule-separated.  */
+
+  .project-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .project {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0 var(--space-4);
+    padding-block: var(--space-7);
+    border-top: 1px solid var(--rule);
+  }
+  .project__num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    padding-top: 0.4em;
+    font-weight: 600;
+  }
+  .project__name {
+    font-family: var(--font-serif);
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+    line-height: 1.15;
+    margin-bottom: var(--space-2);
+  }
+  .project__meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-meta);
+    color: var(--ink-mute);
+    letter-spacing: 0.02em;
+    margin-bottom: var(--space-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.5ch;
+    align-items: baseline;
+  }
+  .project__meta .org { color: var(--ink-soft); }
+  .project__meta .sep { color: var(--rule); margin-inline: 0.3ch; }
+  .project__oneliner {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--fs-sm);
+    color: var(--ink-soft);
+    line-height: 1.55;
+    padding-left: var(--space-4);
+    border-left: 1.5px solid var(--accent-rule);
+    margin-block: var(--space-4);
+    text-wrap: pretty;
+  }
+  .project__body {
+    font-family: var(--font-serif);
+    font-size: var(--fs-sm);
+    color: var(--ink-soft);
+    line-height: var(--lh-body);
+    text-wrap: pretty;
+    margin-bottom: var(--space-4);
+  }
+  .project__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  /* ── Career table ────────────────────────────────────────────────────
+     Three columns: years / role + org / location. Dense mono rhythm.  */
+
+  .career-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .career-row {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr 5rem;
+    gap: var(--space-3);
+    padding-block: var(--space-3);
+    border-top: 1px solid var(--rule-soft);
+    align-items: baseline;
+  }
+  .career-years {
+    font-family: var(--font-mono);
+    font-size: var(--fs-meta);
+    color: var(--ink-mute);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .career-role {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--ink);
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+  .career-org {
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .career-org::before {
+    content: " · ";
+    font-style: normal;
+    color: var(--ink-faint);
+  }
+  .career-where {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* ── Contact grid ────────────────────────────────────────────────────
+     Rule-bordered cells, serif value under mono label.               */
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-top: var(--space-6);
+  }
+  .contact-cell {
+    padding: var(--space-5) 0;
+    text-decoration: none;
+    color: var(--ink);
+    border-right: 1px solid var(--rule);
+    padding-right: var(--space-5);
+    transition: color var(--dur) var(--ease);
+  }
+  .contact-cell + .contact-cell {
+    padding-left: var(--space-5);
+  }
+  .contact-cell:last-child {
+    border-right: 0;
+  }
+  .contact-cell:hover .contact-val { color: var(--accent); }
+  .contact-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-2);
+    font-weight: 500;
+  }
+  .contact-val {
+    font-family: var(--font-serif);
+    font-size: var(--fs-lead);
+    color: var(--ink);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    transition: color var(--dur) var(--ease);
+  }
+
+  /* ── Also at ─────────────────────────────────────────────────────────
+     Cross-link to formicary.ai, quietly.                              */
+  .also-at {
+    margin-top: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: var(--fs-meta);
+    color: var(--ink-mute);
+    line-height: var(--lh-meta);
+    text-wrap: pretty;
+  }
+  .also-at a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1px;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .also-at a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent-rule);
+  }
+
+  /* ── Intro prose ─────────────────────────────────────────────────────
+     Inherits .prose from tokens.css; small additions only.           */
+  .intro-prose > p + p {
+    margin-top: var(--space-5);
+  }
+  .intro-prose > p {
+    max-width: var(--measure);
+    text-wrap: pretty;
+  }
+
+  /* ── Mobile overrides ────────────────────────────────────────────────*/
+  @media (max-width: 640px) {
+    .career-row {
+      grid-template-columns: max-content 1fr;
+    }
+    .career-where {
+      display: none;
+    }
+    .project {
+      grid-template-columns: 1.75rem 1fr;
+      gap: 0 var(--space-3);
+    }
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+    .contact-cell {
+      border-right: 0;
+      border-bottom: 1px solid var(--rule);
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .contact-cell:last-child {
+      border-bottom: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<a class="visually-hidden" href="#intro">Skip to main content</a>
+
+<header class="site-head">
+  <div class="shell site-head__row">
+    <a class="wordmark" href="#intro" aria-label="Adrian Rossouw — home">
+      Adrian Rossouw
+    </a>
+    <div class="site-head__right">
+      <nav class="nav" aria-label="Primary">
+        <a href="#practice">Practice</a>
+        <a href="#work">Work</a>
+        <a href="#career">Career</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" data-theme-toggle aria-label="Switch to dark theme">
+        <span class="theme-toggle__disc" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================================================================
+       INTRO
+       ================================================================ -->
+  <article id="intro" class="shell">
+
+    <div class="masthead">
+      <p class="kicker masthead__eyebrow">VP Information Systems &amp; Product &nbsp;·&nbsp; Dublin, Ireland</p>
+      <h1 class="masthead__title">I work at the <span class="title-seam">seam</span> between AI engineering and regulated&#8209;industry delivery.</h1>
+      <p class="masthead__deck">25 years of software. The last five leading a regulated AI diagnostic to FDA De Novo Authorization.</p>
+      <p class="masthead__byline">Adrian Rossouw &nbsp;·&nbsp; Dublin, Ireland &nbsp;·&nbsp; via South Africa</p>
+    </div>
+
+    <aside class="epistemic" style="margin-top: var(--space-7);" aria-label="Current status">
+      <p class="epistemic__label">Current status</p>
+      <dl class="epistemic__fields">
+        <dt>Role</dt>
+        <dd>VP Information Systems &amp; Product, Renalytix</dd>
+        <dt>Location</dt>
+        <dd>Dublin, Ireland</dd>
+        <dt>Focus</dt>
+        <dd>Agentic AI &nbsp;·&nbsp; Regulated software &nbsp;·&nbsp; LLM orchestration</dd>
+      </dl>
+      <p class="epistemic__note">Currently in a full-time role. Open to thoughtful conversations about agentic AI work in regulated industries. <em><a href="https://www.linkedin.com/in/adrianrossouw" style="color:inherit;border-bottom:1px solid var(--accent-rule);" rel="noopener noreferrer" target="_blank">LinkedIn</a> is the most reliable place to reach me.</em></p>
+      
+    </aside>
+
+    <hr class="rule-mark" />
+
+    <div class="intro-prose prose">
+      <p>I have been writing software since 2000, and working remotely since 2004, two decades of distributed work before it had a name or a handbook. That arc runs from South Africa, through twenty years of open-source work with North American companies, to Dublin.</p>
+
+      <p>For the last five years I led the technology organisation at Renalytix, behind KidneyIntelX.dkd, an AI-enabled diagnostic that earned FDA De Novo authorization. That meant building and running a software group under ISO 13485 and ISO 27001, shipping more than ten EHR integrations into major US health systems, and owning the architecture beneath a submission I contributed to rather than led.</p>
+
+      <p>Before that, nearly seven years at NearForm as Delivery Architect and then Technical Director. Sales handed an engagement over once a lead went hot, and I was the first technical person in: discovery with the client, rapid prototyping, architecture, and delivery, through to production. Forward-deployed work by another name.</p>
+
+      <p>These days I spend most of my time hands-on with agentic AI, where it meets the regulated-software world I've worked in. Early and open-ended, kept in public at <a href="https://formicary.ai">formicary.ai</a>.</p>
+
+      <p>The through-line across 25 years: open-source roots, a long run of building and leading remote teams across time zones, and a soft spot for making complex systems boring and dependable.</p>
+    </div>
+
+  </article>
+
+  <!-- ================================================================
+       PRACTICE
+       ================================================================ -->
+  <section id="practice" class="shell page-section">
+
+    <div class="section-head">
+      <p class="kicker">Practice</p>
+      <h2>What I do well.</h2>
+    </div>
+
+    <ol class="practice-list">
+      <li class="practice-item">
+        <span class="practice-num">01</span>
+        <span class="practice-text">Build and ship software in regulated settings: medtech, fintech, compliance-heavy SaaS.</span>
+      </li>
+      <li class="practice-item">
+        <span class="practice-num">02</span>
+        <span class="practice-text">Design and run AI and agentic systems where getting it wrong has real consequences.</span>
+      </li>
+      <li class="practice-item">
+        <span class="practice-num">03</span>
+        <span class="practice-text">Stand up engineering organisations that pass audits, not just demos.</span>
+      </li>
+      <li class="practice-item">
+        <span class="practice-num">04</span>
+        <span class="practice-text">Own the full delivery journey, from the first sales call to production hand-off.</span>
+      </li>
+      <li class="practice-item">
+        <span class="practice-num">05</span>
+        <span class="practice-text">Translate between engineering and executive, clinical, and regulatory audiences.</span>
+      </li>
+    </ol>
+
+  </section>
+
+  <!-- ================================================================
+       WORK
+       ================================================================ -->
+  <section id="work" class="shell page-section">
+
+    <div class="section-head">
+      <p class="kicker">Work</p>
+      <h2>A handful of things I've worked on.</h2>
+      <p class="section-lede">Twenty-five years of work compressed, ruthlessly, into four entries.</p>
+    </div>
+
+    <ul class="project-list">
+
+      <li class="project">
+        <span class="project__num">01</span>
+        <div>
+          <h3 class="project__name">KidneyIntelX.dkd</h3>
+          <div class="project__meta">
+            <span class="org">Renalytix</span>
+            <span class="sep">/</span>
+            <span>VP Information Systems &amp; Product</span>
+            <span class="sep">/</span>
+            <span>2020 — present</span>
+          </div>
+          <p class="project__oneliner">FDA De Novo-authorized AI diagnostic for kidney disease.</p>
+          <p class="project__body">Led the technology teams behind an AI diagnostic that predicts kidney function decline in diabetic patients with early-stage kidney disease. Provided architectural direction through the FDA De Novo submission, built out a SaMD-classified engineering organisation under ISO&nbsp;13485 and ISO&nbsp;27001, and shipped production EHR integrations into health systems including Mount Sinai and Singing River, across Epic, eClinicalWorks, and athenahealth. Much of what I learned here is specific to regulated AI: change control, validation, clinical partnership, and the pace at which you can ship when a bug has patient consequences.</p>
+          <div class="project__tags">
+            <span class="tag">FDA</span>
+            <span class="tag">ISO 13485</span>
+            <span class="tag">ISO 27001</span>
+            <span class="tag">SaMD</span>
+            <span class="tag">EHR</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="project">
+        <span class="project__num">02</span>
+        <div>
+          <h3 class="project__name">Enterprise delivery portfolio</h3>
+          <div class="project__meta">
+            <span class="org">NearForm</span>
+            <span class="sep">/</span>
+            <span>Delivery Architect → Technical Director</span>
+            <span class="sep">/</span>
+            <span>2015 — 2021</span>
+          </div>
+          <p class="project__oneliner">Node.js consulting at enterprise scale, end-to-end.</p>
+          <p class="project__body">As Delivery Architect and then Technical Director at a large remote-first Node.js consultancy, I was the first technical person on an engagement once sales handed over a hot lead, and I owned it from there: discovery, architecture, delivery, and the client relationship through to production. Projects ran across a global ethics and compliance investigation product, DevOps and build pipelines for a payroll firm running hundreds of developers across dozens of services, a course-management and CBT system for a global consulting firm, and a cash-distribution optimisation system deployed across banks and ATM networks in Africa and Asia. I also ran the company's open-source portfolio for a year.</p>
+          <div class="project__tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">microservices</span>
+            <span class="tag">consulting</span>
+            <span class="tag">team leadership</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="project">
+        <span class="project__num">03</span>
+        <div>
+          <h3 class="project__name">Aegir Hosting System</h3>
+          <div class="project__meta">
+            <span class="org">Development Seed &middot; open source</span>
+            <span class="sep">/</span>
+            <span>Founder &amp; lead developer</span>
+            <span class="sep">/</span>
+            <span>2007 — 2011</span>
+          </div>
+          <p class="project__oneliner">Turn-key hosting platform for Drupal sites.</p>
+          <p class="project__body">Founded and led the first major version of Aegir, an open-source turn-key hosting platform for Drupal. It took a familiar pain point — managing hundreds of Drupal installs — and made it boring, which is the highest compliment infrastructure can receive. The project outlived my involvement by years, which remains the thing I am most quietly pleased about.</p>
+          <div class="project__tags">
+            <span class="tag">open source</span>
+            <span class="tag">Drupal</span>
+            <span class="tag">PaaS</span>
+            <span class="tag">infrastructure</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="project">
+        <span class="project__num">04</span>
+        <div>
+          <h3 class="project__name">Early MapBox-era work</h3>
+          <div class="project__meta">
+            <span class="org">Development Seed</span>
+            <span class="sep">/</span>
+            <span>Senior Developer</span>
+            <span class="sep">/</span>
+            <span>2009 — 2012</span>
+          </div>
+          <p class="project__oneliner">Data-oriented sites on the open-source mapping stack.</p>
+          <p class="project__body">At Development Seed I moved to Node.js alongside the team and contributed to a run of large data-oriented sites and applications. Much of the work sat on an open-source mapping stack that was later spun out as MapBox. I was a contributor, not the architect, and that is a fair reminder that the useful work is often the work you do before anyone has named the category.</p>
+          <div class="project__tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">geodata</span>
+            <span class="tag">open source</span>
+          </div>
+        </div>
+      </li>
+
+    </ul>
+
+  </section>
+
+  <!-- ================================================================
+       CAREER
+       ================================================================ -->
+  <section id="career" class="shell page-section">
+
+    <div class="section-head">
+      <p class="kicker">Career</p>
+      <h2>The whole arc.</h2>
+      <p class="section-lede">Johannesburg → Cape Town → Dublin, in roughly that order.</p>
+    </div>
+
+    <ul class="career-list">
+      <li class="career-row">
+        <span class="career-years">2023 — present</span>
+        <span class="career-role">VP Information Systems &amp; Product<span class="career-org">Renalytix</span></span>
+        <span class="career-where">Dublin</span>
+      </li>
+      <li class="career-row">
+        <span class="career-years">2021 — 2023</span>
+        <span class="career-role">VP Digital Health Technology Delivery<span class="career-org">Renalytix</span></span>
+        <span class="career-where">Dublin</span>
+      </li>
+      <li class="career-row">
+        <span class="career-years">2020 — 2021</span>
+        <span class="career-role">Head of Health Technology Delivery<span class="career-org">Renalytix</span></span>
+        <span class="career-where">Dublin</span>
+      </li>
+      <li class="career-row">
+        <span class="career-years">2020 — 2021</span>
+        <span class="career-role">Technical Director<span class="career-org">NearForm</span></span>
+        <span class="career-where">Dublin</span>
+      </li>
+      <li class="career-row">
+        <span class="career-years">2015 — 2020</span>
+        <span class="career-role">Delivery Architect<span class="career-org">NearForm</span></span>
+        <span class="career-where">Ireland</span>
+      </li>
+      <li class="career-row">
+        <span class="career-years">2014</span>
+        <span class="career-role">CTO<span class="career-org">Wayfinder</span></span>
+        <span class="career-where">remote</span>
+      </li>
+      <li class="career-row">
+        <span class="career-years">2012 — 2014</span>
+        <span class="career-role">Lead Software Architect<span class="career-org">GoBe.Me</span></span>
+        <span class="career-where">remote</span>
+      </li>
+      <li class="career-row">
+        <span class="career-years">2009 — 2012</span>
+        <span class="career-role">Senior Developer<span class="career-org">Development Seed</span></span>
+        <span class="career-where">remote</span>
+      </li>
+      <li class="career-row">
+        <span class="career-years">2004 — 2009</span>
+        <span class="career-role">Developer, co-founder<span class="career-org">Bryght / Raincity Studios</span></span>
+        <span class="career-where">remote</span>
+      </li>
+      <li class="career-row">
+        <span class="career-years">2001 — 2004</span>
+        <span class="career-role">Application Developer<span class="career-org">Obsidian Systems</span></span>
+        <span class="career-where">South Africa</span>
+      </li>
+      <li class="career-row">
+        <span class="career-years">2000 — 2001</span>
+        <span class="career-role">Instructor, then Developer<span class="career-org">ITTC</span></span>
+        <span class="career-where">Pretoria</span>
+      </li>
+    </ul>
+
+  </section>
+
+  <!-- ================================================================
+       CONTACT
+       ================================================================ -->
+  <section id="contact" class="shell page-section">
+
+    <div class="section-head">
+      <p class="kicker">Contact</p>
+      <h2>Write to me.</h2>
+    </div>
+
+    <div class="prose">
+      <p>I'm in the middle of a digital purge — moving off old platforms and scaling back my public presence. Possibly to the detriment of my career, certainly to the benefit of my sanity.</p>
+      <p>LinkedIn is the most reliable place to reach me. If we've met and you have my email, use it.</p>
+    </div>
+
+    <div class="contact-grid">
+      <a href="https://www.linkedin.com/in/adrianrossouw" class="contact-cell" rel="noopener noreferrer" target="_blank">
+        <div class="contact-label">LinkedIn</div>
+        <div class="contact-val">adrianrossouw</div>
+      </a>
+      <a href="https://github.com/AdrianRossouw" class="contact-cell" rel="noopener noreferrer" target="_blank">
+        <div class="contact-label">GitHub</div>
+        <div class="contact-val">AdrianRossouw</div>
+      </a>
+    </div>
+
+    <p class="also-at">Also writing at <a href="https://formicary.ai" rel="noopener noreferrer" target="_blank">formicary.ai</a> &mdash; applied research on regulated-software techniques for AI agents.</p>
+
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="shell site-foot__row">
+    <span>adrian.rossouw.ie</span>
+    <span style="opacity:0.6;">typeset in Newsreader &amp; IBM Plex Mono</span>
+    <span>Adrian Rossouw, 2026&ndash;</span>
+  </div>
+</footer>
+
+</body>
+</html>
